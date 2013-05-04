@@ -20,7 +20,7 @@ proc = Arrow(plus1).from_a(pow2)
 print proc(0) # result: 0
 ```
 
-## rrowChoice
+## ArrowChoice
 
 ```
 arr = Arrow()
