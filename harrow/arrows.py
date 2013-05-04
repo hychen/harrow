@@ -7,8 +7,8 @@ def dup(acc):
 def choice(acc, i):
     return acc[i]
 
-def lift_arrs(acc, arrs):
-    return [acc] + [arr() for arr in arrs]
+def fanout_arrs(acc, arrs):
+    return [arr(acc) for arr in arrs]
 
 def map_arr(acc, f):
     return map(f, acc)
@@ -89,7 +89,7 @@ class ArrowChoice(object):
 
     def fanout(self, *arrs):
         new = self.copy()
-        new.pre(lift_arrs, arrs)
+        new.pre(fanout_arrs, arrs)
         return new
 
 # @TODO: provide a plugin hook.

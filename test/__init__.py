@@ -39,10 +39,9 @@ class ChoiceArrowTestCase(unittest.TestCase):
         self.assertEquals(2, prog2(acc))
 
     def test_fanout(self):
-        _add = lambda n : n + 1
-        a1 = Arrow(_add).thunk(0)
-        a2 = Arrow(_add).thunk(1)
-        a3 = Arrow(_add).thunk(2)
-        prog = Arrow().fanout(a1, a2, a3)
-        self.assertEquals(['o', 1, 2, 3], prog('o'))
-        self.assertEquals('o', prog.first()('o'))
+        arr_add1 = Arrow(lambda n: n+1)
+        arr_add2 = Arrow(lambda n: n+2)
+        arr_add3 = Arrow(lambda n: n+3)
+        prog = Arrow().fanout(arr_add1, arr_add2, arr_add3)
+        self.assertEquals([2, 3, 4], prog(1))
+        self.assertEquals(2, prog.first()(1))
