@@ -24,7 +24,7 @@ print proc(0) # result: 0
 
 ```
 arr = Arrow()
-prog = arr.choice(lambda n: n + 1, 0)
+proc = arr.choice(lambda n: n + 1, 0)
 print proc([1,2,3,4]) # result: [2, 2, 3, 4])
 ```
 
