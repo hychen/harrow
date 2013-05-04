@@ -51,8 +51,12 @@ class _BaseArrow(object):
     def __or__(self, arr):
         return self.to_a(arr)
 
-    def thunk(self, acc):
-        return lambda : self(acc)
+    def feed(self, acc):
+        self.acc = acc
+        return self
+
+    def thunk(self):
+        return lambda acc: self(acc)
 
     def pre(self, fn, *args, **kwargs):
         self.funcs.insert(0, (fn, args, kwargs))

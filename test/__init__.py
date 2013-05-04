@@ -27,6 +27,11 @@ class ArrowBasicTestCase(unittest.TestCase):
         arr4 = arr3 | arr1
         self.assertEquals(5, arr4(acc))
 
+    def test_feed(self):
+        proc1 = Arrow(map_arr, _plus1).feed([0,0,0,0])
+        proc2 = Arrow().from_a(proc1)
+        print proc2()
+
 class ChoiceArrowTestCase(unittest.TestCase):
 
     def test_parallel(self):
