@@ -24,10 +24,8 @@ print proc(0) # result: 0
 
 ```
 arr = Arrow()
-proc = Arrow().first()
-print proc([1,2,3,4]) # result: 1
-proc = Arrow().choice(3)
-print proc([1,2,3,4]) # result: 4
+prog = arr.choice(lambda n: n + 1, 0)
+print proc([1,2,3,4]) # result: [2, 2, 3, 4])
 ```
 
 check test cases for more details...

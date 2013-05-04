@@ -4,8 +4,12 @@ def dup(acc):
     newacc = copy.copy(acc)
     return [acc, newacc]
 
-def choice(acc, i):
-    return acc[i]
+def choice(acc, arr, i):
+    for idx, e in enumerate(acc):
+        if idx == i:
+            yield arr(e)
+        else:
+            yield e
 
 def fanout_arrs(acc, arrs):
     return [arr(acc) for arr in arrs]
@@ -89,16 +93,18 @@ class ArrowChoice(object):
         new.post(dup)
         return new.to_a(arr)
 
-    def choice(self, i):
+    def choice(self, arr, i, lazy=False):
         new = self.copy()
-        new.post(choice, i)
+        new.post(choice, arr, i)
+        if not lazy:
+            new.post(lambda acc:[e for e in acc])
         return new
 
-    def first(self):
-        return self.choice(0)
+    def first(self, arr):
+        return self.choice(0, arr)
 
-    def second(self):
-        return self.choice(1)
+    def second(self, arr):
+        return self.choice(1, arr)
 
     def fanout(self, *arrs):
         new = self.copy()

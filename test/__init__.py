@@ -32,14 +32,10 @@ class ChoiceArrowTestCase(unittest.TestCase):
     def test_parallel(self):
         self.assertEquals(5, Arrow().parallel(lambda n: n+1, lambda n: n+2)(1))
 
-    def test_split_and_choice(self):
-        acc = 0 
-        prog = Arrow(lambda acc: acc + 1).split(Arrow(lambda acc: [acc[0], acc[1]+1]))
-        self.assertEquals([1, 2], prog(acc))
-        prog1 = prog.first()
-        self.assertEquals(1, prog1(acc))
-        prog2 = prog.second()
-        self.assertEquals(2, prog2(acc))
+    def test_choice(self):
+        arr = Arrow()
+        prog = arr.choice(_plus1, 1)
+        self.assertEquals([0, 1, 0, 0], prog([0, 0, 0, 0]))
 
     def test_fanout(self):
         arr_add1 = Arrow(lambda n: n+1)
@@ -47,4 +43,3 @@ class ChoiceArrowTestCase(unittest.TestCase):
         arr_add3 = Arrow(lambda n: n+3)
         prog = Arrow().fanout(arr_add1, arr_add2, arr_add3)
         self.assertEquals([2, 3, 4], prog(1))
-        self.assertEquals(2, prog.first()(1))
