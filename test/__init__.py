@@ -30,7 +30,7 @@ class ArrowBasicTestCase(unittest.TestCase):
     def test_feed(self):
         proc1 = Arrow(map_arr, _plus1).feed([0,0,0,0])
         proc2 = Arrow().from_a(proc1)
-        print proc2()
+        self.assertEquals([1, 1, 1, 1], proc2())
 
 class ChoiceArrowTestCase(unittest.TestCase):
 
