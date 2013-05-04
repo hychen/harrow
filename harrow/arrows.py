@@ -10,6 +10,14 @@ def choice(acc, i):
 def fanout_arrs(acc, arrs):
     return [arr(acc) for arr in arrs]
 
+def parallel_arrs(acc, arrs):
+    hd = arrs[0]
+    tl = arrs[1:]
+    ret = hd(acc)
+    for arr in tl:
+        ret += arr(acc)
+    return ret
+
 def map_arr(acc, f):
     return map(f, acc)
 
@@ -67,6 +75,11 @@ class _BaseArrow(object):
     def from_a(self, arr):
         new = self.copy()
         new.pre(arr)
+        return new
+
+    def parallel(self, *arrs):
+        new = self.copy()
+        new.post(parallel_arrs, arrs)
         return new
 
 class ArrowChoice(object):

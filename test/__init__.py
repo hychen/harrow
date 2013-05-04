@@ -29,6 +29,9 @@ class ArrowBasicTestCase(unittest.TestCase):
 
 class ChoiceArrowTestCase(unittest.TestCase):
 
+    def test_parallel(self):
+        self.assertEquals(5, Arrow().parallel(lambda n: n+1, lambda n: n+2)(1))
+
     def test_split_and_choice(self):
         acc = 0 
         prog = Arrow(lambda acc: acc + 1).split(Arrow(lambda acc: [acc[0], acc[1]+1]))
