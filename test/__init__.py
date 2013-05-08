@@ -4,6 +4,7 @@ from harrow.arrows import Arrow, map_arr, filter_arr
 
 _plus1 = lambda n: n + 1
 _pow2 = lambda n: n * 2
+_fn_with_args =  lambda acc, base, base2: acc + base + base2
 
 class ArrowBasicTestCase(unittest.TestCase):
 
@@ -35,12 +36,19 @@ class ArrowBasicTestCase(unittest.TestCase):
 class ChoiceArrowTestCase(unittest.TestCase):
 
     def test_parallel(self):
-        self.assertEquals([2, 4], Arrow().parallel(lambda n: n+1, lambda n: n+2)([1, 2]))
+        prog =  Arrow().parallel(lambda n: n+1, lambda n: n+2)
+        prog.post(list)
+        self.assertEquals([2, 4], prog([1, 2]))
 
     def test_choice(self):
         arr = Arrow()
-        prog = arr.choice(_plus1, 1)
-        self.assertEquals([0, 1, 0, 0], prog([0, 0, 0, 0]))
+        prog = arr.choice(1,  _plus1)
+        prog.post(list)
+        self.assertEquals([0, 1, 1, 0], prog([0, 0, 1, 0]))
+        arr = Arrow()
+        prog = arr.choice(1, _fn_with_args, 1, 2)
+        prog.post(list)
+        self.assertEquals([0, 3, 1, 0], prog([0, 0, 1, 0]))
 
     def test_fanout(self):
         arr_add1 = Arrow(lambda n: n+1)

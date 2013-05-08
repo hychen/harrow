@@ -1,7 +1,8 @@
-def choice(acc, arr, i):
+
+def choice(acc, i, arr, *args, **kwargs):
     for idx, e in enumerate(acc):
         if idx == i:
-            yield arr(e)
+            yield arr(e, *args, **kwargs)
         else:
             yield e
 
@@ -18,7 +19,7 @@ def map_arr(acc, f):
 
 def filter_arr(acc, f):
     return filter(f, acc)
-
+    
 # --------------------------------------------------------- 
 # Classes
 # --------------------------------------------------------- 
@@ -136,16 +137,14 @@ class _BaseArrow(object):
         new.pre(arr)
         return new
 
-    def choice(self, arr, i, lazy=False):
+    def choice(self, i, arr, *args, **kwargs):
         """Send the nth component of the input through the argument arrow, and copy the rest unchanged to the output.
         """
         new = self.copy()
-        new.post(choice, arr, i)
-        if not lazy:
-            new.post(lambda acc:[e for e in acc])
+        new.post(choice, i, arr, *args, **kwargs)
         return new
 
-    def first(self, arr):
+    def first(self, arr, *args, **kwargs):
         """Send the first component of the input through the argument arrow, and copy the rest unchanged to the output.
 
         Args:
@@ -154,7 +153,7 @@ class _BaseArrow(object):
         Returns:
         - Arrow
         """
-        return self.choice(0, arr)
+        return self.choice(0, arr, *args, **kwargs)
 
     def parallel(self, *fs, **opts):
         """Split the input between the two argument arrows and combine their output.
@@ -173,8 +172,8 @@ class _BaseArrow(object):
 
 class ArrowChoice(object):
 
-    def second(self, arr):
-        return self.choice(1, arr)
+    def second(self, arr, *args, **kwargs):
+        return self.choice(1, arr, *args, **kwargs)
 
     def fanout(self, *arrs):
         new = self.copy()
