@@ -166,13 +166,13 @@ class _BaseArrow(object):
         """
         new = self.copy()
         new.post(parallel_arrs, fs)
-        if opts.get('lazy', True):
-            new.post(lambda acc: [e for e in acc])
         return new
 
 class ArrowChoice(object):
 
     def second(self, arr, *args, **kwargs):
+        """
+        """
         return self.choice(1, arr, *args, **kwargs)
 
     def fanout(self, *arrs):
