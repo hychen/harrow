@@ -142,6 +142,26 @@ class _BaseArrow(object):
         new.pre(arr)
         return new
 
+    def choice(self, arr, i, lazy=False):
+        """Send the nth component of the input through the argument arrow, and copy the rest unchanged to the output.
+        """
+        new = self.copy()
+        new.post(choice, arr, i)
+        if not lazy:
+            new.post(lambda acc:[e for e in acc])
+        return new
+
+    def first(self, arr):
+        """Send the first component of the input through the argument arrow, and copy the rest unchanged to the output.
+
+        Args:
+        - arr: callable object.
+
+        Returns:
+        - Arrow
+        """
+        return self.choice(0, arr)
+
     def parallel(self, *fs, **opts):
         """Split the input between the two argument arrows and combine their output.
 
@@ -163,16 +183,6 @@ class ArrowChoice(object):
         new = self.copy()
         new.post(dup)
         return new.to_a(arr)
-
-    def choice(self, arr, i, lazy=False):
-        new = self.copy()
-        new.post(choice, arr, i)
-        if not lazy:
-            new.post(lambda acc:[e for e in acc])
-        return new
-
-    def first(self, arr):
-        return self.choice(0, arr)
 
     def second(self, arr):
         return self.choice(1, arr)
