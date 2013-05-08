@@ -1,9 +1,3 @@
-import copy
-
-def dup(acc):
-    newacc = copy.copy(acc)
-    return [acc, newacc]
-
 def choice(acc, arr, i):
     for idx, e in enumerate(acc):
         if idx == i:
@@ -178,11 +172,6 @@ class _BaseArrow(object):
         return new
 
 class ArrowChoice(object):
-
-    def split(self, arr):
-        new = self.copy()
-        new.post(dup)
-        return new.to_a(arr)
 
     def second(self, arr):
         return self.choice(1, arr)
