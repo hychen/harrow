@@ -144,17 +144,6 @@ class _BaseArrow(object):
         new.post(choice, i, arr, *args, **kwargs)
         return new
 
-    def first(self, arr, *args, **kwargs):
-        """Send the first component of the input through the argument arrow, and copy the rest unchanged to the output.
-
-        Args:
-        - arr: callable object.
-
-        Returns:
-        - Arrow
-        """
-        return self.choice(0, arr, *args, **kwargs)
-
     def parallel(self, *fs, **opts):
         """Split the input between the two argument arrows and combine their output.
 
@@ -168,17 +157,20 @@ class _BaseArrow(object):
         new.post(parallel_arrs, fs)
         return new
 
-class ArrowChoice(object):
-
-    def second(self, arr, *args, **kwargs):
-        """
-        """
-        return self.choice(1, arr, *args, **kwargs)
-
     def fanout(self, *arrs):
+        """Fanout: send the input to both argument arrows and combine their output.
+
+        Args:
+        - *arrs: list of Arrows.
+        Returns:
+        - Arrow
+        """
         new = self.copy()
         new.pre(fanout_arrs, arrs)
         return new
 
+class ArrowChoice(object):
+    pass
+    
 # @TODO: provide a plugin hook.
 Arrow = type('Arrow', (_BaseArrow, ArrowChoice), {})
