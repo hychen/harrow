@@ -35,7 +35,7 @@ class ArrowBasicTestCase(unittest.TestCase):
 class ChoiceArrowTestCase(unittest.TestCase):
 
     def test_parallel(self):
-        self.assertEquals(5, Arrow().parallel(lambda n: n+1, lambda n: n+2)(1))
+        self.assertEquals([2, 4], Arrow().parallel(lambda n: n+1, lambda n: n+2)([1, 2]))
 
     def test_choice(self):
         arr = Arrow()
