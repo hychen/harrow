@@ -56,3 +56,11 @@ class ChoiceArrowTestCase(unittest.TestCase):
         arr_add3 = Arrow(lambda n: n+3)
         prog = Arrow().fanout(arr_add1, arr_add2, arr_add3)
         self.assertEquals([2, 3, 4], prog(1))
+
+    def test_fanin(self):
+        arr_add1 = Arrow(lambda n: n+1).feed(1)
+        arr_add2 = Arrow(lambda n: n+2).feed(2)
+        arr_add3 = Arrow(lambda n: n+3).feed(3)
+        prog = Arrow().fanin(lambda e: e > 3, arr_add1, arr_add2, arr_add3)
+        self.assertEquals(4, prog())
+        

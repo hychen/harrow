@@ -6,6 +6,15 @@ def choice(acc, i, arr, *args, **kwargs):
         else:
             yield e
 
+def fanin_acc(acc, f, arrs):
+    result = [arr() for arr in arrs]
+    for e in result:
+        if f and not f(e):
+            continue
+        elif not e:
+            continue
+        return e
+            
 def fanout_arrs(acc, arrs):
     return [arr(acc) for arr in arrs]
 
@@ -170,7 +179,20 @@ class _BaseArrow(object):
         return new
 
 class ArrowChoice(object):
-    pass
-    
+
+    def fanin(self, f, *arrs):
+        """merge their outputs of arrows.
+
+        Args:
+        - f: selector function.
+        - *arrs: Arrows.
+        Returns:
+        - Arrow
+        """
+        new = self.copy()
+        new.post(fanin_acc, f, arrs)
+        return new
+        
 # @TODO: provide a plugin hook.
 Arrow = type('Arrow', (_BaseArrow, ArrowChoice), {})
+
