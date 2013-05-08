@@ -196,7 +196,7 @@ class ArrowChoice(object):
 # @TODO: provide a plugin hook.
 Arrow = type('Arrow', (_BaseArrow, ArrowChoice), {})
 
-def arr(f, *args, **kwargs):
+def arr(*args, **kwargs):
     """make an Arrow
 
     Args:
@@ -204,4 +204,9 @@ def arr(f, *args, **kwargs):
     - *args: function arguments
     - **kwargs: keyword arguments
     """
-    return Arrow(lambda acc: f(*args, **kwargs))
+    if args:
+        f = args[0]
+        args = args[1:]
+        return Arrow(lambda acc: f(*args, **kwargs))
+    else:
+        return Arrow()
