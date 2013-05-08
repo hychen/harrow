@@ -196,3 +196,12 @@ class ArrowChoice(object):
 # @TODO: provide a plugin hook.
 Arrow = type('Arrow', (_BaseArrow, ArrowChoice), {})
 
+def arr(f, *args, **kwargs):
+    """make an Arrow
+
+    Args:
+    - f: function
+    - *args: function arguments
+    - **kwargs: keyword arguments
+    """
+    return Arrow(lambda acc: f(*args, **kwargs))
