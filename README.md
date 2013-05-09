@@ -105,3 +105,12 @@ prog.post(list)
 # compute f(1) and g(1) and combine the result.
 print prog([1,2])
 ``
+
+## Reference
+- [Understanding Arrows](http://en.wikibooks.org/wiki/Haskell/Understanding_arrows)
+- [Circular Programming](http://www.haskell.org/haskellwiki/Circular_programming)
+
+
+
+
+
