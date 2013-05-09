@@ -104,7 +104,7 @@ prog =  arr().parallel(f,g)
 prog.post(list)
 # compute f(1) and g(1) and combine the result.
 print prog([1,2])
-``
+```
 
 ## Reference
 - [Understanding Arrows](http://en.wikibooks.org/wiki/Haskell/Understanding_arrows)
