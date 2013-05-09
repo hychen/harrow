@@ -28,6 +28,15 @@ def map_arr(acc, f):
 
 def filter_arr(acc, f):
     return filter(f, acc)
+
+def thunk(f, *args, **kwargs):
+
+    """Defer evaluation of an Arrow.
+
+    Returns:
+    - 0-args lambda function.
+    """
+    return lambda: f(*args, **kwargs)
     
 # --------------------------------------------------------- 
 # Classes
@@ -77,14 +86,6 @@ class _BaseArrow(object):
         """
         self.acc = acc
         return self
-
-    def thunk(self):
-        """Defer evaluation of an Arrow.
-
-        Returns:
-        - 0-args lambda function.
-        """
-        return lambda acc: self(acc)
 
     def pre(self, fn, *args, **kwargs):
         """Precomposition with a pure function.
