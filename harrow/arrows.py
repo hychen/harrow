@@ -23,11 +23,11 @@ def parallel_arrs(acc, arrs):
     for idx,e in enumerate(acc):
         yield arrs[idx](acc[idx])
     
-def map_arr(acc, f):
-    return map(f, acc)
+def map_arr(acc, f, *args, **kwargs):
+    return map(f, acc, *args, **kwargs)
 
-def filter_arr(acc, f):
-    return filter(f, acc)
+def filter_arr(acc, f, *args, **kwargs):
+    return filter(f, acc, *args, **kwargs)
 
 def thunk(f, *args, **kwargs):
 
@@ -111,6 +111,32 @@ class _BaseArrow(object):
         - Self
         """
         self.funcs.append((fn, args, kwargs))
+        return self
+
+    def map(self, *args, **kwargs):
+        """Return a list of the results of applying the function to the items of acc
+
+        Args:
+        - fn: function that the first argument is acc
+        - *args: reset arguments of function 
+        - **kwargs: keyword arguments of function
+        Returns:
+        - Arrow
+        """
+        self.post(map_arr, *args, **kwargs)
+        return self
+        
+    def filter(self, *args, **kwargs):
+        """Return those items of sequence for which function(item) is true.
+        
+        Args:
+        - fn: function that the first argument is acc
+        - *args: reset arguments of function 
+        - **kwargs: keyword arguments of function
+        Returns:
+        - Arrow
+        """
+        self.post(filter_arr, *args, **kwargs)
         return self
 
     def copy(self):

@@ -15,8 +15,8 @@ class ArrowBasicTestCase(unittest.TestCase):
         self.assertEquals(1, left_prog(0))
 
     def test_precomputation(self):
-        arr = Arrow(map_arr, lambda n: n+1)
-        larger2arr = arr.post(filter_arr, lambda n: n>2)
+        arr = Arrow().map(lambda n: n+1)
+        larger2arr = arr.filter(lambda n: n>2)
         self.assertEquals([3,4,5,6,7, 8], larger2arr([1,2,3,4,5,6,7]))
 
     def test_syntax_sugar(self):
