@@ -64,3 +64,14 @@ class ChoiceArrowTestCase(unittest.TestCase):
         prog = Arrow().fanin(lambda e: e > 3, arr_add1, arr_add2, arr_add3)
         self.assertEquals(4, prog())
         
+class ArrowLoopTestCase(unittest.TestCase):
+
+    def test_times(self):
+        arr_add1 = lambda idx, acc, base: idx + acc * base
+        prog = Arrow().times(5, arr_add1, 1).post(list)
+        self.assertEquals([5, 6, 7, 8, 9], prog(5))
+
+    def test_each(self):
+        arr_add1 = lambda acc, a, b: a + b
+        proc =  Arrow().each('b', arr_add1, 'fixed: ').post(list).feed(['a', 'b', 'c'])
+        self.assertEquals(['fixed: a', 'fixed: b', 'fixed: c'], proc())

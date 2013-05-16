@@ -29,6 +29,18 @@ def map_arr(acc, f, *args, **kwargs):
 def filter_arr(acc, f, *args, **kwargs):
     return filter(f, acc, *args, **kwargs)
 
+def times_arr(acc, i, arr, *args, **kwargs):
+    """Repeate function
+
+    Args:
+    - i:
+    - arr: function
+    Returns:
+    - Arrow
+    """
+    for idx in range(0, i):
+        yield arr(idx, acc, *args, **kwargs)
+
 def thunk(f, *args, **kwargs):
 
     """Defer evaluation of an Arrow.
@@ -219,6 +231,23 @@ class ArrowChoice(object):
         new = self.copy()
         new.post(fanin_acc, f, arrs)
         return new
+
+def each_arr(acc, k, arr, *args, **kwargs):
+    for v in acc:
+        kwargs[k] = v
+        yield arr(acc, *args,**kwargs)
+    
+class ArrowLoop(object):
+
+    def times(self, i, f, *args, **kwargs):
+        new = self.copy()
+        new.post(times_arr, i, f, *args, **kwargs)
+        return new
+
+    def each(self, k, f,*args,**kwargs):
+        new = self.copy()
+        new.post(each_arr, k, f, *args,**kwargs)
+        return new
         
 # @TODO: provide a plugin hook.
-Arrow = type('Arrow', (_BaseArrow, ArrowChoice), {})
+Arrow = type('Arrow', (_BaseArrow, ArrowChoice,  ArrowLoop), {})
