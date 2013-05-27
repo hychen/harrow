@@ -66,12 +66,29 @@ class ChoiceArrowTestCase(unittest.TestCase):
         
 class ArrowLoopTestCase(unittest.TestCase):
 
+    def test_until(self):
+        def append1(lst):
+            lst.append(1)
+            return lst
+            
+        proc = Arrow(append1).until(lambda acc: len(acc) == 10)
+        self.assertEquals([1, 1, 1, 1, 1, 1, 1, 1, 1, 1], proc([]))
+        self.assertEquals([9, 9, 9, 1, 1, 1, 1, 1, 1, 1], proc([9, 9, 9]))
+        
     def test_times(self):
-        arr_add1 = lambda idx, acc, base: idx + acc * base
-        prog = Arrow().times(5, arr_add1, 1).post(list)
-        self.assertEquals([5, 6, 7, 8, 9], prog(5))
+        def append_idx(acc):
+            (idx, lst) = acc
+            lst.append(idx)
+            return lst
+            
+        proc = Arrow(append_idx).times(10)
+        self.assertEquals([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], proc([]))
+
+        proc =  Arrow(append_idx).loop(0, 10, 5)
+        self.assertEquals([5, 10, 15], proc([]))
 
     def test_each(self):
         arr_add1 = lambda acc, a, b: a + b
         proc =  Arrow().each('b', arr_add1, 'fixed: ').post(list).feed(['a', 'b', 'c'])
         self.assertEquals(['fixed: a', 'fixed: b', 'fixed: c'], proc())
+

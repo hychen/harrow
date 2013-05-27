@@ -236,18 +236,46 @@ def each_arr(acc, k, arr, *args, **kwargs):
     for v in acc:
         kwargs[k] = v
         yield arr(acc, *args,**kwargs)
+
+def until_arr(acc, input_f, feadback_f):
+    cur_result = input_f(acc)
+    done = feadback_f(cur_result)
     
+    if done:
+        return cur_result
+    else:
+        return until_arr(cur_result, input_f, feadback_f)
+
+def trace_arr(acc, input_f, feadback_f, feadback_acc):
+    (done, next_fd_acc) =  feadback_f(feadback_acc, acc)
+    cur_result = input_f((next_fd_acc, acc))
+    if done:
+        return cur_result
+    else:
+        return trace_arr(cur_result, input_f, feadback_f, next_fd_acc)
+        
 class ArrowLoop(object):
 
-    def times(self, i, f, *args, **kwargs):
-        new = self.copy()
-        new.post(times_arr, i, f, *args, **kwargs)
-        return new
+    def until(self, fd):
+        """
+        Args:
+        - fd: a function to check the product value. 
+        """
+        return Arrow(until_arr, self, fd)
+        
+    def trace(self, fd, fd_acc = None):
+        return Arrow(trace_arr, self, fd, fd_acc)
+        
+    def times(self, i):
+        return self.loop(0, i, 1)
+        
+    def loop(self, start, end, step):
+        return self.trace(lambda idx, acc: (idx == end, step + idx), start)
 
     def each(self, k, f,*args,**kwargs):
         new = self.copy()
         new.post(each_arr, k, f, *args,**kwargs)
         return new
-        
+
 # @TODO: provide a plugin hook.
 Arrow = type('Arrow', (_BaseArrow, ArrowChoice,  ArrowLoop), {})

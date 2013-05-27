@@ -106,6 +106,41 @@ prog.post(list)
 print prog([1,2])
 ```
 
+### Looping - Until
+
+Repeat function until the its input argument satisfy the termination condition.
+
+```
+def append1(lst):
+    lst.append(1)
+    return lst
+            
+proc = Arrow(append1).until(lambda acc: len(acc) == 10)
+# [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+print proc([])
+```
+
+### Looping - Times is Loop is Trace
+
+```
+def append_idx(acc):
+    (idx, lst) = acc
+    lst.append(idx)
+    return lst
+            
+proc = Arrow(append_idx).times(10)
+# [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+print proc([])
+      
+proc =  Arrow(append_idx).loop(0, 10, 1)
+# [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+print  proc([])
+
+proc = Arrow(append_idx).trace(lambda idx, acc: (idx == end, step + idx), start)
+# [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+print  proc([])
+```
+
 ## Reference
 - [Understanding Arrows](http://en.wikibooks.org/wiki/Haskell/Understanding_arrows)
 - [Circular Programming](http://www.haskell.org/haskellwiki/Circular_programming)
