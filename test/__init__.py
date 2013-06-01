@@ -35,11 +35,11 @@ class ArrowBasicTestCase(unittest.TestCase):
 
     def test_choice(self):
         arr = Arrow()
-        prog = arr.choice(1,  _plus1)
+        prog = arr.choice_apply(1,  _plus1)
         prog.post(list)
         self.assertEquals([0, 1, 1, 0], prog([0, 0, 1, 0]))
         arr = Arrow()
-        prog = arr.choice(1, _fn_with_args, 1, 2)
+        prog = arr.choice_apply(1, _fn_with_args, 1, 2)
         prog.post(list)
         self.assertEquals([0, 3, 1, 0], prog([0, 0, 1, 0]))
 
@@ -61,6 +61,15 @@ class ArrowBasicTestCase(unittest.TestCase):
         
 class ChoiceArrowTestCase(unittest.TestCase):
 
+    def test_select(self):
+        arr_add1 = Arrow(lambda n: n+1)
+        arr_add2 = Arrow(lambda n: n+2)
+        arr_add3 = Arrow(lambda n: n+3)        
+        prog = Arrow().fanout(t1=arr_add1, t2=arr_add2, t3=arr_add3).select('t1', 't3')
+        self.assertEquals([2, 4], prog(1))
+        prog = Arrow().fanout(arr_add1, arr_add2, arr_add3).select(1, 2)
+        self.assertEquals([3, 4], prog(1))
+    
     def test_fanin(self):
         arr_add1 = Arrow(lambda n: n+1).feed(1)
         arr_add2 = Arrow(lambda n: n+2).feed(2)

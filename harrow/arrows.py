@@ -190,7 +190,7 @@ class _BaseArrow(object):
         new.pre(arr)
         return new
 
-    def choice(self, i, arr, *args, **kwargs):
+    def choice_apply(self, i, arr, *args, **kwargs):
         """Send the nth component of the input through the argument arrow, and copy the rest unchanged to the output.
         """
         new = self.copy()
@@ -224,6 +224,18 @@ class _BaseArrow(object):
 
 class ArrowChoice(object):
 
+    def choice(self, tag):
+        """get an output result of input arrows by tag
+        """    
+        self.post(lambda acc: acc[tag])
+        return self
+    
+    def select(self, *tags):
+        """get an output results of input arrows by tags. 
+        """
+        self.post(lambda acc: [acc[tag] for tag in tags])
+        return self
+    
     def fanin(self, f, *arrs):
         """merge their outputs of arrows.
 
@@ -233,9 +245,8 @@ class ArrowChoice(object):
         Returns:
         - Arrow
         """
-        new = self.copy()
-        new.post(fanin_acc, f, arrs)
-        return new
+        self.post(fanin_acc, f, arrs)
+        return self
 
 def each_arr(acc, k, arr, *args, **kwargs):
     for v in acc:
