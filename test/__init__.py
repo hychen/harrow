@@ -33,13 +33,6 @@ class ArrowBasicTestCase(unittest.TestCase):
         proc2 = Arrow().from_a(proc1)
         self.assertEquals([1, 1, 1, 1], proc2())
 
-class ChoiceArrowTestCase(unittest.TestCase):
-
-    def test_parallel(self):
-        prog =  Arrow().parallel(lambda n: n+1, lambda n: n+2)
-        prog.post(list)
-        self.assertEquals([2, 4], prog([1, 2]))
-
     def test_choice(self):
         arr = Arrow()
         prog = arr.choice(1,  _plus1)
@@ -50,12 +43,21 @@ class ChoiceArrowTestCase(unittest.TestCase):
         prog.post(list)
         self.assertEquals([0, 3, 1, 0], prog([0, 0, 1, 0]))
 
+    def test_parallel(self):
+        """***"""
+        prog =  Arrow().parallel(lambda n: n+1, lambda n: n+2)
+        prog.post(list)
+        self.assertEquals([2, 4], prog([1, 2]))
+        
     def test_fanout(self):
+        """&&&"""
         arr_add1 = Arrow(lambda n: n+1)
         arr_add2 = Arrow(lambda n: n+2)
         arr_add3 = Arrow(lambda n: n+3)
         prog = Arrow().fanout(arr_add1, arr_add2, arr_add3)
         self.assertEquals([2, 3, 4], prog(1))
+        
+class ChoiceArrowTestCase(unittest.TestCase):
 
     def test_fanin(self):
         arr_add1 = Arrow(lambda n: n+1).feed(1)
