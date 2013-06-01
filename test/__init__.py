@@ -70,12 +70,17 @@ class ChoiceArrowTestCase(unittest.TestCase):
         prog = Arrow().fanout(arr_add1, arr_add2, arr_add3).select(1, 2)
         self.assertEquals([3, 4], prog(1))
     
+    def test_multiplex(self):
+        arr_add1 = Arrow(lambda n: n+1)
+        arr_add2 = Arrow(lambda n: n+2)
+        arr_add3 = Arrow(lambda n: n+3)
+        prog = Arrow().fanout(arr_add1, arr_add2, arr_add3).multiplex('t1', 't2', 't3')
+        self.assertEquals({'t1': 2, 't2': 3, 't3': 4}, prog(1))
+        prog = Arrow().fanout(arr_add1, arr_add2, arr_add3).multiplex(0, 2, 1)
+        self.assertEquals([2, 4, 3], prog(1))
+
     def test_fanin(self):
-        arr_add1 = Arrow(lambda n: n+1).feed(1)
-        arr_add2 = Arrow(lambda n: n+2).feed(2)
-        arr_add3 = Arrow(lambda n: n+3).feed(3)
-        prog = Arrow().fanin(lambda e: e > 3, arr_add1, arr_add2, arr_add3)
-        self.assertEquals(4, prog())
+        self.assertEquals(11, Arrow().fanin()([1, 2, 3, 5]))
         
 class ArrowLoopTestCase(unittest.TestCase):
 

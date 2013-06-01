@@ -1,3 +1,4 @@
+import operator
 
 def choice(acc, i, arr, *args, **kwargs):
     for idx, e in enumerate(acc):
@@ -5,15 +6,6 @@ def choice(acc, i, arr, *args, **kwargs):
             yield arr(e, *args, **kwargs)
         else:
             yield e
-
-def fanin_acc(acc, f, arrs):
-    result = [arr() for arr in arrs]
-    for e in result:
-        if f and not f(e):
-            continue
-        elif not e:
-            continue
-        return e
             
 def fanout_arrs(acc, arrs=None, kwarrs=None):
     if arrs:
@@ -222,6 +214,14 @@ class _BaseArrow(object):
         new.pre(fanout_arrs, arrs, kwarrs)
         return new
 
+def multiplex(acc, tags):
+    ret = None
+    for i, tag in enumerate(tags):
+        if ret is None:
+            ret = [0 for _ in range(0, len(tags))] if type(tag) is int else {}
+        ret[tag] = acc[i]
+    return ret
+    
 class ArrowChoice(object):
 
     def choice(self, tag):
@@ -235,17 +235,21 @@ class ArrowChoice(object):
         """
         self.post(lambda acc: [acc[tag] for tag in tags])
         return self
+
+    def multiplex(self, *tags):
+        self.post(multiplex,  tags)
+        return self
     
-    def fanin(self, f, *arrs):
+    def fanin(self, f=operator.add):
         """merge their outputs of arrows.
 
         Args:
-        - f: selector function.
-        - *arrs: Arrows.
+        - f: merge function.
         Returns:
         - Arrow
         """
-        self.post(fanin_acc, f, arrs)
+        #@FIXME: roundant codes here. 
+        self.post(lambda acc: reduce(lambda ret, xs: f(ret, xs), acc))
         return self
 
 def each_arr(acc, k, arr, *args, **kwargs):
