@@ -56,6 +56,8 @@ class ArrowBasicTestCase(unittest.TestCase):
         arr_add3 = Arrow(lambda n: n+3)
         prog = Arrow().fanout(arr_add1, arr_add2, arr_add3)
         self.assertEquals([2, 3, 4], prog(1))
+        prog = Arrow().fanout(t1=arr_add1, t2=arr_add2, t3=arr_add3)
+        self.assertEquals({'t1': 2, 't2': 3, 't3': 4}, prog(1))
         
 class ChoiceArrowTestCase(unittest.TestCase):
 

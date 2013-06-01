@@ -15,8 +15,13 @@ def fanin_acc(acc, f, arrs):
             continue
         return e
             
-def fanout_arrs(acc, arrs):
-    return [arr(acc) for arr in arrs]
+def fanout_arrs(acc, arrs=None, kwarrs=None):
+    if arrs:
+        return [arr(acc) for arr in arrs]
+    elif kwarrs:
+        return {tag: arr(acc) for tag, arr in kwarrs.items()}
+    else:
+        raise Exception('no input arrows')
 
 def parallel_arrs(acc, arrs):
     assert len(acc) == len(arrs)
@@ -205,7 +210,7 @@ class _BaseArrow(object):
         new.post(parallel_arrs, fs)
         return new
 
-    def fanout(self, *arrs):
+    def fanout(self, *arrs, **kwarrs):
         """Fanout: send the input to both argument arrows and combine their output.
 
         Args:
@@ -214,7 +219,7 @@ class _BaseArrow(object):
         - Arrow
         """
         new = self.copy()
-        new.pre(fanout_arrs, arrs)
+        new.pre(fanout_arrs, arrs, kwarrs)
         return new
 
 class ArrowChoice(object):
